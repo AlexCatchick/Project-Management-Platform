@@ -1,203 +1,64 @@
 # Project Camp
 
-A full-stack project management application built with Node.js, Express, MongoDB, and vanilla JavaScript.
+A project management system with authentication, role-based access control, and task tracking.
 
-## Features
+## Tech Stack
 
-- User authentication with JWT
-- Project management with role-based access control
-- Task management with subtasks
-- Project notes
-- File attachments for tasks
-- Email verification and password reset
+- **Backend**: Node.js, Express, MongoDB
+- **Frontend**: Vanilla JavaScript, HTML, CSS
+- **Authentication**: JWT with refresh tokens
+- **Deployment**: Render (backend + frontend)
 
-## Setup
+## Quick Start
 
-### Prerequisites
+### Local Setup
 
-- Node.js v18 or higher
-- MongoDB database
-- Mailtrap account for email testing
-
-### Installation
-
-1. Clone the repository
-2. Install dependencies:
-   ```
-   npm install
-   ```
-
-3. Copy `.env.example` to `.env` and configure:
-   ```
-   cp .env.example .env
-   ```
-
-4. Update `.env` with your credentials:
-   - MongoDB connection string
-   - JWT secrets
-   - Mailtrap SMTP credentials
-   - Frontend URL
-
-### Running Locally
-
-Development mode:
-```
+```bash
+npm install
+cp .env.example .env
+# Configure .env with your MongoDB URI
 npm run dev
 ```
 
-Production mode:
-```
-npm start
-```
+Access at `http://localhost:8080`
 
-### Test Data
+### Seed Test Data
 
-Seed the database with test users and sample data:
-```
+```bash
 npm run seed
 ```
 
-This creates three test accounts with different roles:
+**Test Accounts:**
+- Admin: `admin@projectcamp.com` / `Admin@123`
+- Project Admin: `projectadmin@projectcamp.com` / `Admin@123`
+- Member: `member@projectcamp.com` / `Member@123`
 
-**Admin (Project Owner)**
-- Email: `admin@projectcamp.com`
-- Password: `Admin@123`
-- Access: Full control - create/update/delete projects, manage members, tasks, notes
+## Deployment
 
-**Project Admin**
-- Email: `projectadmin@projectcamp.com`
-- Password: `Admin@123`
-- Access: Manage tasks and subtasks, view notes
+See [DEPLOYMENT.md](DEPLOYMENT.md) for complete deployment guide.
 
-**Member**
-- Email: `member@projectcamp.com`
-- Password: `Member@123`
-- Access: View tasks and notes, update subtask completion status
+**Quick Steps:**
+1. Setup MongoDB Atlas (free tier)
+2. Push to GitHub
+3. Deploy to Render with `render.yaml`
+4. Set `MONGO_URI` environment variable
 
-### Understanding Roles
+## Features
 
-The system uses **project-based roles**, not global user types:
+- JWT authentication with email verification
+- Three-tier role system (Admin, Project Admin, Member)
+- Project and team member management
+- Task and subtask tracking
+- File attachments
+- Project notes
 
-- When you create a project, you automatically become the **admin** (owner) of that project
-- You can invite other users and assign them roles within your project:
-  - **admin**: Full control over the project
-  - **project_admin**: Can manage tasks and subtasks
-  - **member**: Can view content and update subtask status
-- The same user can have different roles in different projects
+## API Endpoints
 
-To test different permissions, log in with the different test accounts above.
+Full API documentation available in [README_FULL.md](README_FULL.md)
 
-The backend will run on `http://localhost:8080`
-The frontend is served from the `public` directory at the same URL
+## License
 
-## Deployment on Render
-
-### Prerequisites
-
-1. **GitHub Account** - Push your code to GitHub
-2. **MongoDB Atlas Account** - Free tier available at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
-3. **Render Account** - Free at [render.com](https://render.com)
-
-### Step 1: Setup MongoDB Atlas
-
-1. Go to [MongoDB Atlas](https://www.mongodb.com/cloud/atlas) and sign in
-2. Create a new free cluster (M0 Sandbox)
-3. Click "Database Access" → "Add New Database User"
-   - Create username and password (save these!)
-   - Set "Built-in Role" to "Read and write to any database"
-4. Click "Network Access" → "Add IP Address"
-   - Choose "Allow Access from Anywhere" (0.0.0.0/0)
-5. Click "Database" → "Connect" → "Connect your application"
-   - Copy the connection string
-   - Replace `<password>` with your database user password
-   - Example: `mongodb+srv://username:password@cluster0.xxxxx.mongodb.net/projectcamp`
-
-### Step 2: Push to GitHub
-
-```bash
-git init
-git add .
-git commit -m "Initial commit"
-git branch -M main
-git remote add origin https://github.com/yourusername/projectcamp.git
-git push -u origin main
-```
-
-### Step 3: Deploy on Render
-
-1. Go to [Render Dashboard](https://dashboard.render.com)
-2. Click "New +" → "Web Service"
-3. Connect your GitHub repository
-4. Render will auto-detect the `render.yaml` file
-5. Click "Apply" to use the configuration
-
-6. **Set Environment Variables** (will be prompted):
-   - `MONGO_URI`: Your MongoDB Atlas connection string from Step 1
-   - `MAILTRAP_SMTP_USER`: (Optional) Your Mailtrap username for emails
-   - `MAILTRAP_SMTP_PASS`: (Optional) Your Mailtrap password
-   
-   The following are auto-generated by Render:
-   - `ACCESS_TOKEN_SECRET`: Auto-generated
-   - `REFRESH_TOKEN_SECRET`: Auto-generated
-   - `FRONTEND_URL`: Auto-set from your service URL
-   - `CROSS_ORIGIN`: Auto-set from your service URL
-
-7. Click "Create Web Service"
-
-8. Wait 2-3 minutes for deployment to complete
-
-9. Your app will be live at: `https://projectcamp.onrender.com` (or your chosen name)
-
-### Step 4: Test Your Deployment
-
-1. Visit your Render URL
-2. Try registering a new account
-3. Log in and create a project
-4. Test the functionality
-
-### Important Notes
-
-- **Free Tier Limitations**: 
-  - Service spins down after 15 minutes of inactivity
-  - First request after inactivity takes ~30 seconds to wake up
-  - 750 hours/month of runtime (plenty for testing)
-
-- **Email Functionality**:
-  - If you skip Mailtrap credentials, email features (verification, password reset) won't work
-  - Users can still register and login without email verification for testing
-
-- **Database**: 
-  - MongoDB Atlas free tier includes 512MB storage
-  - Automatically backs up your data
-
-### Troubleshooting
-
-**Deployment fails:**
-- Check Render logs: Dashboard → Your Service → Logs
-- Verify `MONGO_URI` is correct and MongoDB Network Access allows all IPs
-
-**Can't connect to MongoDB:**
-- Ensure MongoDB Atlas cluster is running (free tier may pause after inactivity)
-- Verify Network Access whitelist includes 0.0.0.0/0
-
-**Frontend not loading:**
-- Render serves both API and frontend from same URL
-- Check browser console for errors
-- Verify `FRONTEND_URL` matches your Render service URL
-
-### Manual Deployment (Alternative)
-
-If you prefer not to use `render.yaml`:
-
-1. Create Web Service manually
-2. Set Build Command: `npm install`
-3. Set Start Command: `npm start`
-4. Set Environment: `Node`
-5. Add all environment variables listed above
-
-For detailed deployment instructions, see [DEPLOYMENT.md](DEPLOYMENT.md)
-
-### MongoDB Atlas Setup
+ISC
 
 1. Create a free cluster at [MongoDB Atlas](https://www.mongodb.com/cloud/atlas)
 2. Create a database user with read/write access
