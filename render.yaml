@@ -1,0 +1,41 @@
+services:
+  - type: web
+    name: projectcamp
+    env: node
+    region: oregon
+    plan: free
+    buildCommand: npm install
+    startCommand: npm start
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 8080
+      - key: MONGO_URI
+        sync: false
+      - key: ACCESS_TOKEN_SECRET
+        generateValue: true
+      - key: ACCESS_TOKEN_EXPIRY
+        value: 1d
+      - key: REFRESH_TOKEN_SECRET
+        generateValue: true
+      - key: REFRESH_TOKEN_EXPIRY
+        value: 10d
+      - key: MAILTRAP_SMTP_HOST
+        value: smtp.mailtrap.io
+      - key: MAILTRAP_SMTP_PORT
+        value: 2525
+      - key: MAILTRAP_SMTP_USER
+        sync: false
+      - key: MAILTRAP_SMTP_PASS
+        sync: false
+      - key: FRONTEND_URL
+        fromService:
+          type: web
+          name: projectcamp
+          property: host
+      - key: CROSS_ORIGIN
+        fromService:
+          type: web
+          name: projectcamp
+          property: host
